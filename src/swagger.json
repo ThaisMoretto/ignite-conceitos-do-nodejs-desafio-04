@@ -1,0 +1,47 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Desafio: Introdução ao SOLID",
+    "description": "API para criação e listagem de usuários",
+    "version": "1.0.0",
+    "contact": {
+      "email": "thais@rocketseat.com.br"
+    }
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Cria um novo usuário",
+        "description": "Cria um novo usuário a partir de um nome e um e-mail",
+        "requestBody": {},
+        "responses": {}
+      },
+      "get": {
+        "tags": ["Users"],
+        "summary": "Lista todos os usuários cadastrados",
+        "description": "Lista todos os usuários cadastrados - Permitido apenas para solicitações de usuários admin",
+        "requestBody": {},
+        "responses": {}
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Lista um usuário através de seu ID",
+        "description": "Lista um usuário através de seu ID",
+        "requestBody": {},
+        "responses": {}
+      }
+    },
+    "/users/{user_id}/admin": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Transforma um usuário em admin",
+        "description": "Transforma um usuário em admin",
+        "requestBody": {},
+        "responses": {}
+      }
+    }
+  }
+}
