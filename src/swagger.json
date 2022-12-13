@@ -14,15 +14,96 @@
         "tags": ["Users"],
         "summary": "Cria um novo usuário",
         "description": "Cria um novo usuário a partir de um nome e um e-mail",
-        "requestBody": {},
-        "responses": {}
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/CreateUser"
+              }
+            },
+            "required": "true"
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "HTTP 201",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "HTTP 400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "error": {
+                    "value": {
+                      "error": "User already exists!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "get": {
         "tags": ["Users"],
         "summary": "Lista todos os usuários cadastrados",
         "description": "Lista todos os usuários cadastrados - Permitido apenas para solicitações de usuários admin",
-        "requestBody": {},
-        "responses": {}
+        "parameters": [
+          {
+            "in": "header",
+            "name": "user_id",
+            "required": true,
+            "description": "ID do usuário admin passado pelo header da requisição",
+            "schema": {
+              "type": "string",
+              "example": "32dbf411-47cd-466e-809e-1d3a600f9e77"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um array de objetos com os usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Retorna um erro caso o usuário que realizou a busca não seja um admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "error": {
+                    "value": {
+                      "error": "User does not have permission to list all users."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users/{user_id}": {
@@ -30,8 +111,46 @@
         "tags": ["Users"],
         "summary": "Lista um usuário através de seu ID",
         "description": "Lista um usuário através de seu ID",
-        "requestBody": {},
-        "responses": {}
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "description": "ID do usuário que se deseja retornar o cadastro",
+            "schema": {
+              "$ref": "#/components/schemas/UserID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto com os dados do usuário alterado",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Retorna um erro caso não exista um usuário cadastrado com o ID recebido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "error": {
+                    "value": {
+                      "error": "User not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users/{user_id}/admin": {
@@ -39,8 +158,112 @@
         "tags": ["Users"],
         "summary": "Transforma um usuário em admin",
         "description": "Transforma um usuário em admin",
-        "requestBody": {},
-        "responses": {}
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "description": "ID do usuário que se tornará admin",
+            "schema": {
+              "$ref": "#/components/schemas/UserID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Retorna um erro caso não exista um usuário cadastrado com o ID recebido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "error": {
+                    "value": {
+                      "error": "User not found!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "32dbf411-47cd-466e-809e-1d3a600f9e77"
+          },
+          "admin": {
+            "type": "boolean",
+            "format": "string",
+            "example": "false"
+          },
+          "name": {
+            "type": "string",
+            "format": "string",
+            "example": "Jhon Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "string",
+            "example": "jhonDoe@gmail.com"
+          },
+          "created_at": {
+            "type": "Date",
+            "format": "string",
+            "example": "2022-12-12T23:26:20.588Z"
+          },
+          "updated_at": {
+            "type": "Date",
+            "format": "string",
+            "example": "2022-12-12T23:26:20.588Z"
+          }
+        }
+      },
+      "CreateUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "format": "string",
+            "example": "Jhon Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "string",
+            "example": "jhonDoe@gmail.com"
+          }
+        }
+      },
+      "UserID": {
+        "type": "string",
+        "example": "32dbf411-47cd-466e-809e-1d3a600f9e77"
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
       }
     }
   }
